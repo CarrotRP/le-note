@@ -11,11 +11,11 @@ export const noteReducer = (state, action) => {
         case 'REMOVE_NOTE':
             return {notes: state.notes.filter(n => n._id != action.payload._id)};
         case 'UPDATE_NOTE':
-            return {notes: state.notes.map(n => {
-                if(n._id == action.payload._id){
-                    console.log(n)
-                    console.log(action.payload)
-                }})};
+            return {notes: state.notes.map(n => 
+                n._id == action.payload._id ?
+                    {...n, title: action.payload.title, body: action.payload.body}
+                    : n
+            )};
         default:
             return state;
     }

@@ -1,10 +1,12 @@
 import { useState, useContext, useEffect } from "react";
 import { NoteContext } from "../context/NoteContext";
+import { CurrentNoteContext } from "../context/CurrentNoteContext";
 
 function RightPanel(props) {
 
     //i could use a props for dispatch, but im trying out the hook
     const { dispatch } = useContext(NoteContext)
+    const { setCurrentNote } = useContext(CurrentNoteContext);
 
     const [title, setTitle] = useState("");
     const [body, setBody] = useState("");
@@ -21,6 +23,7 @@ function RightPanel(props) {
                 method = 'PATCH';
                 type = 'UPDATE_NOTE';
             } else {
+                console.log('new')
                 url = 'http://localhost:3000/api/notes';
                 method = 'POST';
                 type = 'ADD_NOTE';
@@ -34,7 +37,12 @@ function RightPanel(props) {
             })
             const data = await response.json();
             if (response.ok) {
+                console.log('hello')
                 dispatch({ type: type, payload: data });
+                //if the current note is new, and user added it, set the currentnote to it so user can update and not add another
+                if(props.currentNote == 'NEW'){
+                    setCurrentNote(data)
+                }
             }
         }
     }

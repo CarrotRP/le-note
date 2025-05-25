@@ -28,7 +28,7 @@ const note_update = (req, res) => {
     const id = req.params.id;
     const { title, body } = req.body;
 
-    Note.findByIdAndUpdate(id, { title, body })
+    Note.findByIdAndUpdate(id, { title, body }, { new: true }) //set new:true return the result after update not before
         .then(result => res.json(result))
         .catch(err => console.log(err));
 }
