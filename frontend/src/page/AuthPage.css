@@ -1,0 +1,79 @@
+#root{
+    display: block; /*reset the display grid*/
+}
+.logup-page{
+    height: 100vh;
+    display: grid;
+    place-items: center;
+}
+.container{
+    display: grid;
+    grid-template-columns: 400px;
+    gap: 20px;
+    background-color: black;
+    padding: 40px;
+    border-radius: 15px;
+    border: 1px solid var(--border);
+    box-shadow: 1px 1px 1px var(--border);
+}
+.login{
+    grid-template-rows: 50px 100px 80px;
+}
+.signup{
+    
+    grid-template-rows: 50px 170px 80px;
+}
+.container h1{
+    color: var(--title);
+    place-self: center;
+}
+.container button{
+    justify-self: center;
+    align-self: flex-end;
+    width: 100px;
+    height: 50px;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--item-bg);
+    color: var(--txt-color);
+    font-size: 16px;
+}
+.container button:hover{
+    background-color: #3c3940;
+    cursor: pointer;
+}
+.container{
+    user-select: none;
+}
+.container a{
+    color: var(--txt-color);
+    text-decoration: none;
+}
+.input{
+    display: grid;
+    grid-template-rows: repeat(2, 50px);
+    gap: 10px;
+    position: relative;
+}
+.input svg{
+    position: absolute;
+    bottom: 5px;
+    right: 15px;
+}
+.input svg:hover{
+    cursor: pointer;
+}
+.input input{
+    border-radius: 10px;
+    padding: 15px;
+    border: none;
+    background-color: var(--item-bg);
+    outline: none;
+    caret-color: var(--title);
+    color: white;
+    font-size: 16px;
+}
+/* signup */
+.signup button{
+    width: 150px
+}

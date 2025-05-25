@@ -1,0 +1,20 @@
+nav{
+    grid-area: 1 / 1 / 2 / 2;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    background-color: black;
+    color: var(--title);
+}
+nav h1{
+    font-size: 40px;
+}
+nav svg{
+    margin-right: 10px;
+}
+nav svg:hover{
+    color: #ffcc00;
+    cursor: pointer;
+}
