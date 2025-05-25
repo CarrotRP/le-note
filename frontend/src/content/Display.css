@@ -25,20 +25,32 @@
 }
 .box{
     background-color: var(--item-bg);
-    padding: 10px 20px;
+    position: relative;
     margin-bottom: 10px;
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    overflow-x: hidden;
+}
+.detail{
+    user-select: none;
+    border-radius: 10px;
+    padding: 10px 100% 10px 20px;
+}
+.detail h3{
+    width: 100px;
 }
 .box p{
     color: var(--secondary-text);
 }
 .box svg{
+    position: absolute;
+    right: 0;
+    padding: 10px 20px;
     color: var(--del)
 }
-.box:hover{
+.detail:hover{
     background-color: #3c3940;
     cursor: pointer;
 }

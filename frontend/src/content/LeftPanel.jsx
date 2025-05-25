@@ -24,8 +24,8 @@ function LeftPanel(props) {
         <section className="left-panel">
             {/* props.notes?.length(optional chaining, if props.notes exist then get its length else undefined) */}
             {props.notes?.length > 0 ? props.notes.map((_, i) => {
-                return <div className="box" key={props.notes[i]._id} onClick={() => {props.handleClick(props.notes[i]._id)}}>
-                    <div className="detail">
+                return <div className="box" key={props.notes[i]._id}>
+                    <div className="detail" onClick={() => {props.handleClick(props.notes[i]._id)}}>
                         <h3>{props.notes[i].title}</h3>
                         <p>{convertDate(props.notes[i].updatedAt)}</p>
                     </div>
