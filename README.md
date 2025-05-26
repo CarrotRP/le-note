@@ -14,7 +14,7 @@ a note app, where user can login/signup and write their notes
 - [x] update note
 - [x] (frontend) fix delete btn and box, when deleting note
 - [x] (frontend) add user profile image or icon
-- [ ] (frontend) save button display only on change
+- [x] (frontend) save button display only on change
 - [ ] Login/Signup model, logout, function
 
 ## How to use

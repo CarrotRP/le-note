@@ -8,6 +8,7 @@ import { CurrentNoteContext } from '../context/CurrentNoteContext';
 function Display(){
     const { notes, dispatch } = useContext(NoteContext);
     const { currentNote, setCurrentNote } = useContext(CurrentNoteContext);
+    const [isChange, setIsChange] = useState(false);
 
     useEffect(() => {
         const fetchNotes = async () => {
@@ -26,12 +27,13 @@ function Display(){
         fetch(`http://localhost:3000/api/notes/${id}`)
         .then(response => response.json())
         .then(data => setCurrentNote(data));
+        setIsChange(false);
     }
 
     return(
         <main className='home'>
             <LeftPanel notes={notes} dispatch={dispatch} handleClick={handleClick}/>
-            <RightPanel currentNote={currentNote}/>
+            <RightPanel currentNote={currentNote} isChange={isChange} setIsChange={setIsChange}/>
         </main>
     );
 }

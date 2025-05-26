@@ -1,5 +1,12 @@
 const Note = require('../models/noteModel');
 
+const note_check_auth = (req, res) => {
+    if(req.isAuthenticated()){
+        res.json({authenticated: true, user: req.user});
+    } else{
+        res.json({authentication: false});
+    }
+}
 const note_get = (req, res) => {
     Note.find()
         .then(result => res.json(result));
@@ -34,6 +41,7 @@ const note_update = (req, res) => {
 }
 
 module.exports = {
+    note_check_auth,
     note_get,
     note_get_one,
     note_post,

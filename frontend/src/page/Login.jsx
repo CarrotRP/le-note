@@ -35,7 +35,6 @@ function Login() {
                     <NavLink to="/signup">No account?</NavLink>
                 </div>
                 <button>Login</button>
-                <NavLink to="/">Login</NavLink>
             </div>
         </main>
     );

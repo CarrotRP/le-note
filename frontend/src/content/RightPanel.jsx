@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
 import { NoteContext } from "../context/NoteContext";
 import { CurrentNoteContext } from "../context/CurrentNoteContext";
 
@@ -11,6 +11,9 @@ function RightPanel(props) {
     const [title, setTitle] = useState("");
     const [body, setBody] = useState("");
 
+    const titleRef = useRef(null);
+    const bodyRef = useRef(null);
+
     const handleSave = async () => {
         //TODO: add a checker to see if the notes exist before adding
         const note = { title, body }
@@ -19,11 +22,13 @@ function RightPanel(props) {
 
         if (title != "" && body != "") {
             if (props.currentNote != "NEW") {
-                url = `http://localhost:3000/api/notes/${props.currentNote._id}`;
-                method = 'PATCH';
-                type = 'UPDATE_NOTE';
+                //only update if there's change
+                if (title != props.currentNote.title || body != props.currentNote.title) {
+                    url = `http://localhost:3000/api/notes/${props.currentNote._id}`;
+                    method = 'PATCH';
+                    type = 'UPDATE_NOTE';
+                }
             } else {
-                console.log('new')
                 url = 'http://localhost:3000/api/notes';
                 method = 'POST';
                 type = 'ADD_NOTE';
@@ -37,12 +42,10 @@ function RightPanel(props) {
             })
             const data = await response.json();
             if (response.ok) {
-                console.log('hello')
+                props.setIsChange(false);
                 dispatch({ type: type, payload: data });
-                //if the current note is new, and user added it, set the currentnote to it so user can update and not add another
-                if(props.currentNote == 'NEW'){
-                    setCurrentNote(data)
-                }
+                //set the current note again to update the current note title and body(for checking any change)
+                setCurrentNote(data)
             }
         }
     }
@@ -50,20 +53,30 @@ function RightPanel(props) {
         if (props.currentNote && props.currentNote != "NEW") {
             setTitle(props.currentNote.title);
             setBody(props.currentNote.body);
-        } else if(props.currentNote == "NEW"){
+
+        } else if (props.currentNote == "NEW") {
             setTitle('');
             setBody('');
         }
     }, [props.currentNote]);
 
+    //useeffect for checking any changes
+    useEffect(() => {
+        if (titleRef.current?.value != props.currentNote?.title || bodyRef.current?.value != props.currentNote?.body) {
+            props.setIsChange(true);
+        } else {
+            props.setIsChange(false);
+        }
+    }, [title, body])
+
     return (
         <>
             {props.currentNote ? <section className="right-panel">
                 <div className="top">
-                    <input className="note-title" type="text" maxLength="100" placeholder="Title" onChange={e => setTitle(e.target.value)} value={title} />
-                    <button onClick={handleSave}>Save</button>
+                    <input ref={titleRef} className="note-title" type="text" maxLength="100" placeholder="Title" onChange={e => setTitle(e.target.value)} value={title} />
+                    {props.isChange && <button onClick={handleSave}>Save</button>}
                 </div>
-                <textarea className="note-body" name="note-body" id="note-body" placeholder="body" onChange={e => setBody(e.target.value)} value={body}></textarea>
+                <textarea ref={bodyRef} className="note-body" name="note-body" id="note-body" placeholder="body" onChange={e => setBody(e.target.value)} value={body}></textarea>
             </section> : ""}
         </>
     );
