@@ -1,14 +1,36 @@
-import { NavLink } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import './AuthPage.css';
 
 import { useState } from 'react';
+import { useContext } from 'react';
+import { UserContext } from '../context/UserContext';
 
 function Login() {
+    const { dispatch } = useContext(UserContext);
 
     const [isVisible, setIsVisible] = useState(false);
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
+    const navigate = useNavigate();
 
     const handleEyeClick = () => {
         setIsVisible(iv => iv = !iv);
+    }
+    const handleLogin = () => {
+        const user = { username, password }
+        fetch('http://localhost:3000/user/login', {
+            method: 'POST',
+            body: JSON.stringify(user),
+            credentials: 'include',
+            headers: {
+                'Content-Type' : 'application/json'
+            }
+        }).then(res => res.json())
+        .then(data => {
+            navigate(data.redirect);
+            dispatch({type: 'SET_USER', payload: data.user})
+        });
     }
 
     return (
@@ -16,8 +38,8 @@ function Login() {
             <div className="login container">
                 <h1>Le-Note</h1>
                 <div className="input">
-                    <input type="text" placeholder="Username" />
-                    <input type={isVisible ? "text" : "password"} placeholder="Password" />
+                    <input type="text" placeholder="Username" onChange={e => setUsername(e.target.value)} value={username}/>
+                    <input type={isVisible ? "text" : "password"} placeholder="Password" onChange={e => setPassword(e.target.value)} value={password}/>
                     <svg onClick={handleEyeClick} xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
                         {isVisible ?
                             <>
@@ -34,7 +56,7 @@ function Login() {
                     </svg>
                     <NavLink to="/signup">No account?</NavLink>
                 </div>
-                <button>Login</button>
+                <button onClick={handleLogin}>Login</button>
             </div>
         </main>
     );

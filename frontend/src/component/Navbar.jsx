@@ -1,13 +1,29 @@
 import { useRef, useContext } from 'react';
 import './Navbar.css'
 import { CurrentNoteContext } from '../context/CurrentNoteContext';
+import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../context/UserContext';
 
 function Navbar() {
+    const { state, dispatch } = useContext(UserContext);
+
     const { setCurrentNote } = useContext(CurrentNoteContext);
     const dropdownRef = useRef(null);
+    const navigate = useNavigate();
 
     const handleProfileClick = () => {
         dropdownRef.current.classList.toggle('active');
+    }
+    const handleLogout = () => {
+        fetch('http://localhost:3000/user/logout', {
+            method: 'POST',
+            credentials: 'include',
+        })
+            .then(res => res.json())
+            .then(data => { 
+                navigate(data.redirect);
+                dispatch({type: 'LOGOUT_USER'});
+            });
     }
 
     return (
@@ -22,7 +38,8 @@ function Navbar() {
                     <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
                 </svg>
                 <div className="dropdown" ref={dropdownRef}>
-                    <a href="#">Logout</a>
+                    <li>{state.user?.username}</li>
+                    <li onClick={handleLogout}>Logout</li>
                 </div>
             </div>
         </nav>

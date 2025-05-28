@@ -9,14 +9,16 @@ function MainLayout() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch('http://localhost:3000/api/notes/check-auth')
+        fetch('http://localhost:3000/user/check-auth', {
+            credentials: 'include'
+        })
         .then(res => res.json())
         .then(data => {
-            if(!data.authentication){
-                navigate('/login');
+            if(!data.authenticated){
+                navigate(data.redirect);
             }
         })
-    });
+    }, []);
 
     return (
         <main className="main-layout">

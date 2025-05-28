@@ -1,14 +1,13 @@
 const Note = require('../models/noteModel');
+const User = require('../models/userModel');
 
 const note_check_auth = (req, res) => {
     if(req.isAuthenticated()){
-        res.json({authenticated: true, user: req.user});
-    } else{
-        res.json({authentication: false});
-    }
+        res.json({authenticated: true});
+    } 
 }
 const note_get = (req, res) => {
-    Note.find()
+    Note.find({owner: req.user._id})
         .then(result => res.json(result));
 }
 const note_get_one = (req, res) => {
@@ -19,15 +18,25 @@ const note_get_one = (req, res) => {
 };
 
 const note_post = (req, res) => {
-    const { title, body } = req.body;
+    const { title, body, owner } = req.body;
 
-    Note.create({ title, body })
-        .then(result => res.status(200).json(result));
+    Note.create({ title, body, owner })
+        .then(result => {
+            User.findByIdAndUpdate(owner, { $push: { notes: result._id}})
+            .then(() => {
+                res.status(200).json(result)
+            })
+        });
 }
 const note_del = (req, res) => {
     const id = req.params.id;
     Note.findByIdAndDelete(id)
-        .then(result => res.json(result))
+        .then(result => {
+            User.findByIdAndUpdate(req.user._id, {$pull: { notes: id}})
+            .then(() => {
+                res.json(result)
+            })
+        })
         .catch(err => console.log(err));
 
 }

@@ -7,7 +7,13 @@ const userSchema = new Schema({
     },
     password: {
         type: String
-    }
+    },
+    notes: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Note"
+        }
+    ]
 }, { timestamps: true })
 
 const User = mongoose.model('User', userSchema);

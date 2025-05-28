@@ -17,7 +17,10 @@ const app = express();
 
 const dbURI = `mongodb+srv://${process.env.name}:${process.env.password}@le-note.9oon4wa.mongodb.net/le-note?retryWrites=true&w=majority&appName=le-note`;
 
-app.use(cors())
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true
+}))
 mongoose.connect(dbURI)
     .then(res => app.listen(process.env.PORT))
     .catch(err => console.log(err));
@@ -27,7 +30,7 @@ app.use(express.json());
 app.use(session({
     secret: process.env.secret,
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
 }))
 app.use(passport.initialize());
 app.use(passport.session());
@@ -35,17 +38,18 @@ app.use(passport.session());
 passport.use(new LocalStrategy((username, password, done) => {
     User.findOne({ username: username})
         .then(async data => {
-            if(!data){ return done(null, false, { message: 'no user with that name'})}
+            if(!data)return done(null, false, { message: 'no user with that name'})
             if(await bcrypt.compare(password, data.password) == false){
                 return done(null, false);
-            } return done(null, data)
+            } 
+            return done(null, data)
         })
 }))
 
 passport.serializeUser((user, done) => done(null, user.id));
 passport.deserializeUser((id, done) => {
     User.findById(id)
-        .then(result => done(null, result))
+        .then(result => { return done(null, result)})
         .catch(err => console.log(err));
 })
 

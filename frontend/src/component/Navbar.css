@@ -26,26 +26,32 @@ nav svg:hover{
 
 .dropdown{
     user-select: none;
-    /* display: none; */
     position: absolute;
     background-color: var(--item-bg);
-    padding: 10px 30px 10px 10px;
     border-radius: 10px 0 10px 10px;
-    top: 65px;
-    right: 30px;
+    top: -100px;
     opacity: 0;
     transition: opacity 0.1s;
 }
 .active{
-    /* display: block; */
+    top: 65px;
+    right: 30px;
     opacity: 1;
     transition: opacity 0.1s;
 }
-.dropdown a{
-    text-decoration: none;
+.dropdown li{
+    list-style: none;
     color: var(--txt-color);
+    padding: 10px 30px 10px 10px;
+    border-radius: 10px 0 10px 10px;
 }
-.dropdown a:hover{
+/* set color for first li */
+.dropdown li:nth-child(1){
+    color: var(--title);
+}
+/* set hover to second li */
+.dropdown li:nth-child(2):hover{
     background-color: #3c3940;
     cursor: pointer;
+
 }

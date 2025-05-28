@@ -12,7 +12,8 @@ function LeftPanel(props) {
     }
     const handleDelete = async (id) => {
         const response = await fetch(`http://localhost:3000/api/notes/${id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            credentials: 'include'
         });
         const data = await response.json();
         if(response.ok){

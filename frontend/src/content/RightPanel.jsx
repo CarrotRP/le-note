@@ -1,12 +1,14 @@
 import { useState, useRef, useContext, useEffect } from "react";
 import { NoteContext } from "../context/NoteContext";
 import { CurrentNoteContext } from "../context/CurrentNoteContext";
+import { UserContext } from "../context/UserContext";
 
 function RightPanel(props) {
 
     //i could use a props for dispatch, but im trying out the hook
     const { dispatch } = useContext(NoteContext)
     const { setCurrentNote } = useContext(CurrentNoteContext);
+    const { state } = useContext(UserContext);
 
     const [title, setTitle] = useState("");
     const [body, setBody] = useState("");
@@ -16,24 +18,25 @@ function RightPanel(props) {
 
     const handleSave = async () => {
         //TODO: add a checker to see if the notes exist before adding
-        const note = { title, body }
-
-        var url, method, type;
+        var note, url, method, type;
 
         if (title != "" && body != "") {
             if (props.currentNote != "NEW") {
                 //only update if there's change
                 if (title != props.currentNote.title || body != props.currentNote.title) {
+                    note = { title, body};
                     url = `http://localhost:3000/api/notes/${props.currentNote._id}`;
                     method = 'PATCH';
                     type = 'UPDATE_NOTE';
                 }
             } else {
+                note = {title, body, owner: state.user._id}
                 url = 'http://localhost:3000/api/notes';
                 method = 'POST';
                 type = 'ADD_NOTE';
             }
             const response = await fetch(url, {
+                credentials: 'include',
                 method: method,
                 body: JSON.stringify(note),
                 headers: {

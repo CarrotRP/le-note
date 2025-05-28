@@ -12,7 +12,9 @@ function Display(){
 
     useEffect(() => {
         const fetchNotes = async () => {
-            const response = await fetch('http://localhost:3000/api/notes');
+            const response = await fetch('http://localhost:3000/api/notes', {
+                credentials: 'include'
+            });
             const data = await response.json();
             
             if(response.ok){
