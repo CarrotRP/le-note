@@ -1,4 +1,4 @@
-import { useRef, useContext } from 'react';
+import { useEffect, useRef, useContext } from 'react';
 import './Navbar.css'
 import { CurrentNoteContext } from '../context/CurrentNoteContext';
 import { useNavigate } from 'react-router-dom';
@@ -11,9 +11,21 @@ function Navbar() {
     const dropdownRef = useRef(null);
     const navigate = useNavigate();
 
-    const handleProfileClick = () => {
+    const handleProfileClick = (e) => {
+        e.stopPropagation(); //stop the click event from going up to the parents(stop the event listening here)
         dropdownRef.current.classList.toggle('active');
     }
+    
+    useEffect(() => {
+        //close dropdown when click outside
+        const clickOutside = e => {
+        if(dropdownRef.current && dropdownRef.current.classList.contains('active') && !dropdownRef.current.contains(e.target)){
+            dropdownRef.current.classList.remove('active');
+        }}
+
+        document.addEventListener('click', clickOutside);
+    }, []);
+
     const handleLogout = () => {
         fetch('http://localhost:3000/user/logout', {
             method: 'POST',
