@@ -4,7 +4,7 @@ const passport = require('passport');
 
 const user_check_auth = (req, res) => {
     if(req.isAuthenticated()){
-        res.json({authenticated: true, redirect: '/'});
+        res.json({authenticated: true, redirect: '/', user: req.user});
     } else{
         res.json({authenticated: false, redirect: '/login'});
     }

@@ -11,6 +11,7 @@ function App() {
 
   return (
     <Router>
+      
       <Routes>
         <Route element={<MainLayout/>}>
           <Route path="/" element={<Display />}></Route>
