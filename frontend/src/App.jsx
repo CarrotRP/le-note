@@ -6,6 +6,7 @@ import MainLayout from "./layout/MainLayout"
 import AuthLayout from "./layout/AuthLayout"
 
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom"
+import AdminPage from "./page/AdminPage"
 
 function App() {
 
@@ -15,6 +16,7 @@ function App() {
       <Routes>
         <Route element={<MainLayout/>}>
           <Route path="/" element={<Display />}></Route>
+          <Route path="/admin" element={<AdminPage/>}></Route>
         </Route>
         <Route element={<AuthLayout/>}>
           <Route path="/login" element={<Login/>}></Route>

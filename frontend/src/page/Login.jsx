@@ -11,6 +11,7 @@ function Login() {
     const [isVisible, setIsVisible] = useState(false);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [msg, setMsg] = useState('');
 
     const navigate = useNavigate();
 
@@ -24,13 +25,17 @@ function Login() {
             body: JSON.stringify(user),
             credentials: 'include',
             headers: {
-                'Content-Type' : 'application/json'
+                'Content-Type': 'application/json'
             }
-        }).then(res => res.json())
-        .then(data => {
+        }).then(async (res) => {
+            const data = await res.json();
+            if (!res.ok) {
+                setMsg(data.msg);
+                return;
+            }
+            dispatch({ type: 'SET_USER', payload: data.user });
             navigate(data.redirect);
-            dispatch({type: 'SET_USER', payload: data.user})
-        });
+        })
     }
 
     return (
@@ -38,8 +43,8 @@ function Login() {
             <div className="login container">
                 <h1>Le-Note</h1>
                 <div className="input">
-                    <input type="text" placeholder="Username" onChange={e => setUsername(e.target.value)} value={username}/>
-                    <input type={isVisible ? "text" : "password"} placeholder="Password" onChange={e => setPassword(e.target.value)} value={password}/>
+                    <input type="text" placeholder="Username" onChange={e => setUsername(e.target.value)} value={username} />
+                    <input type={isVisible ? "text" : "password"} placeholder="Password" onChange={e => setPassword(e.target.value)} value={password} />
                     <svg onClick={handleEyeClick} xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
                         {isVisible ?
                             <>
@@ -56,6 +61,7 @@ function Login() {
                     </svg>
                     <NavLink to="/signup">No account?</NavLink>
                 </div>
+                <p style={{ position: 'absolute', top: '85px', left: '40px', color: 'red', fontSize: '16px' }}>{msg}</p>
                 <button onClick={handleLogin}>Login</button>
             </div>
         </main>

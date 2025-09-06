@@ -1,7 +1,7 @@
 import Navbar from "../component/Navbar";
 import Footer from "../component/Footer";
-import { useContext, useEffect } from 'react';
-import { useNavigate, Outlet } from "react-router-dom"; //Outlet is like the "<%- incldue('partial') %>" in node
+import { useState, useContext, useEffect } from 'react';
+import { Navigate, useNavigate, Outlet } from "react-router-dom"; //Outlet is like the "<%- incldue('partial') %>" in node
 import { CurrentNoteContextProvider } from "../context/CurrentNoteContext";
 import { UserContext } from "../context/UserContext";
 
@@ -9,7 +9,7 @@ import { UserContext } from "../context/UserContext";
 function MainLayout() {
     const navigate = useNavigate();
     const {dispatch} = useContext(UserContext);
-
+    const [auth, setAuth] = useState(null);
     
     useEffect(() => {
         fetch('http://localhost:3000/user/check-auth', {
@@ -21,18 +21,22 @@ function MainLayout() {
                 navigate(data.redirect);
             }
             console.log(data);
+            setAuth(data.authenticated);
             dispatch({type: 'SET_USER', payload: data.user})
-        })
+        }).catch(() => setAuth(false));
     }, []);
 
+    if(auth === null){return null};
+
     return (
+        auth ?
         <main className="main-layout">
             <CurrentNoteContextProvider>
                 <Navbar />
                 <Outlet />
                 <Footer />
             </CurrentNoteContextProvider>
-        </main>
+        </main> : <Navigate to='/login'/>
     );
 }
 

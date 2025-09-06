@@ -3,10 +3,11 @@ import './Navbar.css'
 import { CurrentNoteContext } from '../context/CurrentNoteContext';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
+import { NoteContext } from '../context/NoteContext';
 
 function Navbar() {
     const { state, dispatch } = useContext(UserContext);
-
+    const { notes } = useContext(NoteContext);
     const { setCurrentNote } = useContext(CurrentNoteContext);
     const dropdownRef = useRef(null);
     const navigate = useNavigate();
@@ -17,6 +18,7 @@ function Navbar() {
     }
     
     useEffect(() => {
+        console.log(notes);
         //close dropdown when click outside
         const clickOutside = e => {
         if(dropdownRef.current && dropdownRef.current.classList.contains('active') && !dropdownRef.current.contains(e.target)){
@@ -51,6 +53,7 @@ function Navbar() {
                 </svg>
                 <div className="dropdown" ref={dropdownRef}>
                     <li>{state.user?.username}</li>
+                    <li>{state.user?.lastLogin}</li>
                     <li onClick={handleLogout}>Logout</li>
                 </div>
             </div>

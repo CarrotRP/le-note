@@ -29,7 +29,7 @@ nav svg:hover{
     position: absolute;
     background-color: var(--item-bg);
     border-radius: 10px 0 10px 10px;
-    top: -100px;
+    top: -200px;
     opacity: 0;
     transition: opacity 0.1s;
 }
@@ -50,7 +50,7 @@ nav svg:hover{
     color: var(--title);
 }
 /* set hover to second li */
-.dropdown li:nth-child(2):hover{
+.dropdown li:nth-child(3):hover{
     background-color: #3c3940;
     cursor: pointer;
 

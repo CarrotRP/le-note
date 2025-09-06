@@ -1,22 +1,27 @@
-import { useNavigate, Outlet } from "react-router-dom";
-import { useEffect } from "react";
+import { Navigate, useNavigate, Outlet } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 function AuthLayout() {
     const navigate = useNavigate();
+    const [auth, setAuth] = useState(null);
 
     useEffect(() => {
         fetch('http://localhost:3000/user/check-auth', {
             credentials: 'include'
         }).then(res => res.json())
-        .then(data => {
-            if(data.authenticated){
-                navigate(data.redirect);
-            }
-        });
+            .then(data => {
+                if (data.authenticated) {
+                    navigate(data.redirect);
+                }
+                setAuth(data.authenticated);
+            }).catch(() => setAuth(false));
     }, []);
 
+    if(auth === null) {return null};
+
     return (
-        <Outlet />
+        auth ? <Navigate to='/' /> :
+            <Outlet />
     );
 }
 

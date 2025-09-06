@@ -8,6 +8,26 @@ const userSchema = new Schema({
     password: {
         type: String
     },
+    role: {
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user'
+    },
+    lastLogin: {
+        type: Date,
+        default: null
+    },
+    failedAttempts: {
+        type: Number,
+        default: 0
+    },
+    isLocked: {
+        type: Boolean,
+        default: false
+    },
+    lockUntil: {
+        type: Date
+    },
     notes: [
         {
             type: Schema.Types.ObjectId,
