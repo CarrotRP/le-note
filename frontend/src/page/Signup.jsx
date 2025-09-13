@@ -37,7 +37,13 @@ function Signup() {
                         }
                     })
                         .then(res => res.json())
-                        .then(data => navigate(data.redirect));
+                        .then(data => {
+                            if(data.error){
+                                setMsg(data.error);
+                            } else{
+                                navigate(data.redirect)
+                            }
+                        });
                 }
             }else{
                 setMsg('Password must be 8 characters long, include Uppercase, Lowercase, digit and special char')

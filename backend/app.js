@@ -5,6 +5,7 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
+const logger = require('./logger');
 require('dotenv').config();
 
 //attempts var
@@ -39,19 +40,24 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.use(new LocalStrategy((username, password, done) => {
+passport.use(new LocalStrategy({passReqToCallback: true}, (req, username, password, done) => {
     User.findOne({ username: username })
         .then(async data => {
-            if (!data) return done(null, false, { message: 'No user with that name' })
+            const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+
+            if (!data) {
+                logger.warn(`Login failed: No user with that name ${username}`);
+                return done(null, false, { message: 'No user with that name' })}
             // auto-unlock if lock expired
-            // if (data.isLocked && data.lockUntil <= Date.now()) {
-            //     data.isLocked = false;
-            //     data.failedAttempts = 0;
-            //     data.lockUntil = null;
-            //     await data.save();
-            // }
+            if (data.isLocked && data.lockUntil <= Date.now()) {
+                data.isLocked = false;
+                data.failedAttempts = 0;
+                data.lockUntil = null;
+                await data.save();
+            }
 
             if (data.isLocked) {
+                logger.warn(`Account locked with username: ${username} ip: ${ip}`);
                 return done(null, false, { message: "Account locked. Try again later." });
             }
             if (await bcrypt.compare(password, data.password) == false) {
@@ -64,6 +70,7 @@ passport.use(new LocalStrategy((username, password, done) => {
                     return done(null, false, { message: 'Account locked. Try again later.' });
                 }
 
+                logger.warn(`Login failed incorrect password: ${username} ip: ${ip}`)
                 await data.save();
                 return done(null, false, { message: 'Invalid credentials' });
             }
@@ -72,7 +79,7 @@ passport.use(new LocalStrategy((username, password, done) => {
             data.isLocked = false;
             data.lockUntil = null;
             await data.save();
-
+            logger.info(`Login successful with username: ${username} ip: ${ip}`);
             return done(null, data)
         })
 }))
@@ -81,8 +88,17 @@ passport.serializeUser((user, done) => done(null, user.id));
 passport.deserializeUser((id, done) => {
     User.findById(id)
         .then(result => { return done(null, result) })
-        .catch(err => console.log(err));
+        .catch(err => {logger.error(err); console.log(err)});
 })
 
 app.use('/api/notes', noteRoutes);
 app.use('/user', userRoutes);
+
+app.use((req, res, next) => {
+  next(createError(`Route ${req.method} ${req.originalUrl} not found`, 404));
+});
+
+app.use((err, req, res, next) => {
+  logger.error(`${err.status || 500} - ${err.message} - ${req.method} ${req.originalUrl}`);
+  res.status(err.status || 500).send(err.message);
+});
